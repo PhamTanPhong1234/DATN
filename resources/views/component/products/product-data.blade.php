@@ -47,20 +47,12 @@
                 <p>Sắp xếp theo:</p>
             </div>
             <div class="shop-select">
-                <select class="select_option" id="filter-select" style="display: none;">
+                <select class="select_option" id="filter-select">
                     <option value="">Sắp xếp theo mới nhất</option>
                     <option value="az">Từ A đến Z</option>
                     <option value="za">Từ Z đến A</option>
                     <option value="instock">Còn hàng</option>
                 </select>
-                <div class="nice-select select_option" tabindex="0">
-                    <span class="current">Từ A đến Z</span>
-                    <ul class="list">
-                        <li data-value="" class="option">Sắp xếp theo mới nhất</li>
-                        <li data-value="az" class="option selected">Từ A đến Z</li>
-                        <li data-value="za" class="option">Từ Z đến A</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
@@ -72,15 +64,15 @@
                 <form id="filter-form" method="GET" action="{{ route('products.filter') }}" class="filter-form">
                     @csrf
                     <h5>Bộ lọc sản phẩm</h5>
-                    <div class="filter-section">
+                    <div class="filter-section w-25">
                         <label for="category">Chọn danh mục:</label><br>
-                        <!-- <select name="categories-list" id="category-list"  ></select> -->
+
                         <select name="category" id="category-list" style="display: block;">
-                            <!-- <option value="">Tất cả</option> -->
+                            <!-- Options sẽ được thêm vào đây -->
                         </select>
                     </div>
 
-                    <div class="filter-section">
+                    <div class="filter-section" >
                         <br><br>
                         <label for="price_min">Giá từ:</label>
                         <br>
@@ -97,10 +89,7 @@
                         <input type="number" name="quantity_min" id="quantity_min" value="{{ request('quantity_min') }}" class="form-control" placeholder="Min số lượng">
                     </div>
 
-                    <div class="filter-section">
-                        <label for="quantity_max">Số lượng đến:</label>
-                        <input type="number" name="quantity_max" id="quantity_max" value="{{ request('quantity_max') }}" class="form-control" placeholder="Max số lượng">
-                    </div>
+                    
 
                     <button type="submit" class="btn btn-primary w-100 mt-5">Lọc</button>
                 </form>
@@ -118,6 +107,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -125,6 +116,7 @@
                 const productCountElement = document.getElementById("product-count");
                 productCountElement.textContent = `Có ${count} Sản Phẩm.`;
             };
+
             const displayCategories = (categories) => {
                 console.log(categories); // Kiểm tra dữ liệu categories
                 const categoriesList = document.getElementById("category-list");
@@ -144,6 +136,9 @@
                     categoryOption.textContent = category.name;
                     categoriesList.appendChild(categoryOption);
                 });
+
+                // Khởi tạo lại nice-select
+                $('#category-list').niceSelect('update');
             };
 
             // Hàm hiển thị các sản phẩm
@@ -242,7 +237,14 @@
                         console.error("Lỗi:", error);
                     });
             };
+
+            // Khởi tạo nice-select
+            $('select').niceSelect();
+
             fetchApiProduct();
             fetchApiCategories();
         });
     </script>
+</body>
+
+</html>
