@@ -70,7 +70,7 @@
             <div class="row">
                 <div class="col-md-2 col-sm-2">
                     <div class="logo">
-                        <a href="{{ route('index') }}"><img src="assets/images/logo/favicon.png" alt="Logo Ecolife"
+                        <a href="{{ route('index') }}"><img src="{{asset('assets/images/logo/favicon.png')}}" alt="Logo Ecolife"
                                 style="width: 120px;margin-left: 50px " /></a>
                     </div>
                 </div>

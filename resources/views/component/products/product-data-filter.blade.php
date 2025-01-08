@@ -40,7 +40,7 @@
             <a class="active" href="#shop-1" data-bs-toggle="tab">
                 <i class="fa fa-th show_grid"></i>
             </a>
-            <p id="product-count">Có 0 Sản Phẩm.</p>
+            <p id="product-count">Có <span id="productCount"></span> Sản Phẩm.</p>
         </div>
         <div class="select-shoing-wrap">
             <div class="shot-product">
@@ -99,7 +99,50 @@
             <div class="col-md-9">
                 <div id="shop-1" class="tab-pane active">
                     <div class="row product-data" id="product-list">
-                        <!-- Sản phẩm sẽ được hiển thị ở đây -->
+
+                        @if (isset($products))
+                        @foreach ($products as $product)
+                        <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6 col-xs-12">
+                            <article class="list-product">
+                                <div class="img-block">
+                                    <a href="{{ route('single-product', ['id' => $product->id]) }}" class="thumbnail">
+                                        <img class="first-img" src="{{ asset($product->images->isNotEmpty() ? $product->images->first()->image_path : null) }}" alt="{{ $product->name }}">
+                                        <img class="second-img" src="{{ asset($product->images->isNotEmpty() ? $product->images->first()->image_path : null) }}" alt="{{ $product->name }}">
+                                    </a>
+                                    <div class="quick-view">
+                                        <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            <i class="ion-ios-search-strong"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <ul class="product-flag">
+                                    <li class="new">{{ $product->isNew ? 'New' : 'Hot' }}</li>
+                                </ul>
+                                <div class="product-decs">
+                                    <span>{{ $product->Category->name ? $product->Category->name : 'Chưa phân loại' }}</span>
+                                    <h2><a class="product-link">{{ $product->name }}</a></h2>
+
+                                    <div class="pricing-meta">
+                                        <ul>
+                                            <li class="old-price not-cut text-danger">{{ number_format($product->price) }} VND</li>
+                                        </ul>
+                                    </div>
+                                    <div class="rating-product">
+                                        Số lượng sản phẩm: {{ $product->stock}}
+                                    </div>
+                                </div>
+                                <div class="add-to-link">
+                                    <ul>
+                                        <li class="cart"><a class="cart-btn" href="{{ route('single-product', ['id' => $product->id]) }}">Xem Sản Phẩm</a></li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </div>
+                        @endforeach
+                        @else
+
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -110,6 +153,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js"></script>
     <script>
+        // đếm
+
         document.addEventListener("DOMContentLoaded", function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const updateProductCount = (count) => {
@@ -122,7 +167,6 @@
                 const categoriesList = document.getElementById("category-list");
                 categoriesList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
 
-                // Thêm một option "Tất cả" vào đầu danh sách
                 // Thêm một option "Tất cả" vào đầu danh sách
                 const allOption = document.createElement('option');
                 allOption.value = '404';
@@ -137,67 +181,12 @@
                     categoryOption.textContent = category.name;
                     categoriesList.appendChild(categoryOption);
                 });
+
                 // Khởi tạo lại nice-select
                 $('#category-list').niceSelect('update');
             };
 
             // Hàm hiển thị các sản phẩm
-            const displayProducts = (products) => {
-                const productList = document.getElementById("product-list");
-                productList.innerHTML = ""; // Xóa danh sách sản phẩm cũ
-                products.forEach(product => {
-                    const productHTML = `
-                <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6 col-xs-12">
-                    <article class="list-product">
-                        <div class="img-block">
-                            <a href="single-product?id=${product.id}" class="thumbnail">
-                                <img class="first-img" src="${product.image ? product.image : 'default/image'}" alt="${product.name}">
-                                <img class="second-img" src="${product.image}" alt="${product.name}">
-                            </a>
-                            <div class="quick-view">
-                                <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    <i class="ion-ios-search-strong"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <ul class="product-flag">
-                            <li class="new">${product.isNew ? 'New' : ''}</li>
-                        </ul>
-                        <div class="product-decs">
-                            <span>${product.category_name ? product.category_name : 'Chưa phân loại'}</span>
-                            <h2><a class="product-link">${product.name}</a></h2>
-                        
-                            <div class="pricing-meta">
-                                <ul>
-                                    <li class="old-price not-cut text-danger">${product.price} VND</li>
-                                </ul>
-                            </div>   
-                            <div class="rating-product">
-                                        Số lượng sản phẩm: ${product.stock}
-                         </div>
-                        </div>   
-                        
-                        <div class="add-to-link">
-                            <ul>
-                                <li class="cart"><a class="cart-btn" href="single-product?id=${product.id}">Xem Sản Phẩm</a></li>
-                            </ul>
-                        </div>
-                    </article>
-                </div>
-            `;
-                    productList.innerHTML += productHTML;
-                });
-            };
-
-            // Hàm sinh sao đánh giá cho sản phẩm
-            const generateStars = (rating) => {
-                let stars = '';
-                for (let i = 0; i < 5; i++) {
-                    stars += i < rating ? '<i class="ion-android-star"></i>' :
-                        '<i class="ion-android-star-outline"></i>';
-                }
-                return stars;
-            };
 
             // Lắng nghe sự kiện thay đổi bộ lọc sản phẩm
             const selectOptions = document.querySelectorAll('.nice-select .option');
@@ -209,21 +198,7 @@
             });
 
             // Hàm gọi API để lấy sản phẩm
-            const fetchApiProduct = (filter = "") => {
-                axios.get('http://127.0.0.1:8000/api/products', {
-                        params: {
-                            filter
-                        }
-                    })
-                    .then(response => {
-                        const data = response.data;
-                        displayProducts(data.productData);
-                        updateProductCount(data.productData.length);
-                    })
-                    .catch(error => {
-                        console.error("Lỗi:", error);
-                    });
-            };
+
             const fetchApiCategories = (filter = "") => {
                 axios.get('http://127.0.0.1:8000/api/categories', {
                         params: {
@@ -243,8 +218,13 @@
             // Khởi tạo nice-select
             $('select').niceSelect();
 
-            fetchApiProduct();
             fetchApiCategories();
+            window.onload = function() {
+                var productElements = document.querySelectorAll('.col-xl-3.col-md-6.col-lg-4.col-sm-6.col-xs-12');
+                var productCount = productElements.length;
+                document.getElementById('productCount').innerText = productCount;
+            }
+
         });
     </script>
 </body>
