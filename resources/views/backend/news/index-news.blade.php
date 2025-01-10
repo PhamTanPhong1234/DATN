@@ -38,7 +38,7 @@
                                 <th>Chức năng</th>
                                 <th>Xem chi tiết</th>
                             </tr>
-                        </thead>    
+                        </thead>
                         <tbody id="body-data-categories">
                         </tbody>
                     </table>
@@ -55,12 +55,11 @@
                         <div class="form-group col-md-12">
                             <h5>Chỉnh sửa thông tin tin tức</h5>
                         </div>
+                        <div id="editNewsError" class="text-danger w-100 text-center"></div>
                     </div>
+                    <input class="form-control" hidden type="text" id="editNewsId" value="" required readonly>
+                    <input class="form-control" hidden type="text" id="editNewsAuthor" value="" required readonly>
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="control-label">ID</label>
-                            <input class="form-control" type="text" id="editNewsId" value="" required readonly>
-                        </div>
                         <div class="form-group col-md-6">
                             <label class="control-label">Tên tin tức</label>
                             <input class="form-control" type="text" id="editNewsTitle" value="">
@@ -69,10 +68,8 @@
                             <label class="control-label">Nội dung</label>
                             <textarea class="form-control" id="editNewsContent"></textarea>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Tác giả</label>
-                            <input class="form-control" type="text" id="editNewsAuthor"  value="" required readonly>
-                        </div>
+
+
                         <div class="form-group col-md-6">
                             <label class="control-label">Ảnh</label>
                             <input class="form-control" type="file" id="editNewsImage" accept="image/*">
@@ -101,7 +98,7 @@
 
     function displayCategories(categories) {
         const dataForm = document.getElementById('body-data-categories');
-        dataForm.innerHTML = ''; 
+        dataForm.innerHTML = '';
 
         categories.forEach(category => {
             const html = `
@@ -121,19 +118,19 @@
                             <i class="fas fa-edit"></i>
                         </button>
                     </td>
-               <td><a href="/admin/news-content/${category.id}">Chi tiết</a></td>
+               <td><a class="btn btn-info" href="/admin/news-content/${category.id}">Chi tiết</a></td>
 
                 </tr>
             `;
-            dataForm.innerHTML += html; 
+            dataForm.innerHTML += html;
         });
     }
 
     function getData() {
         fetch('/admin/news-index')
-        .then(response => response.json())
-        .then(data => displayCategories(data))
-        .catch(error => console.error("Lỗi khi lấy dữ liệu:", error));
+            .then(response => response.json())
+            .then(data => displayCategories(data))
+            .catch(error => console.error("Lỗi khi lấy dữ liệu:", error));
     }
 
     function openModal() {
@@ -147,27 +144,27 @@
     }
 
     function clearData() {
-        document.getElementById('editNewsId').value = ''; 
-        document.getElementById('editNewsTitle').value = ''; 
-        document.getElementById('editNewsContent').value = ''; 
-        document.getElementById('editNewsAuthor').value = ''; 
-        document.getElementById('editNewsImage').value = ''; 
-        document.getElementById('editNewsStatus').value = ''; 
+        document.getElementById('editNewsId').value = '';
+        document.getElementById('editNewsTitle').value = '';
+        document.getElementById('editNewsContent').value = '';
+        document.getElementById('editNewsAuthor').value = '';
+        document.getElementById('editNewsImage').value = '';
+        document.getElementById('editNewsStatus').value = '';
     }
 
     function editNews(newsId) {
         fetch(`/admin/news-single?id=${newsId}`)
-        .then(response => response.json())
-        .then(data => {
-            const news = data[0];
-            document.getElementById('editNewsId').value = news.id;
-            document.getElementById('editNewsTitle').value = news.title;
-            document.getElementById('editNewsContent').value = news.content;
-            document.getElementById('editNewsAuthor').value = news.user.name;
-            document.getElementById('editNewsImage').value = news.image_path;
-            document.getElementById('editNewsStatus').value = news.status;
-        })
-        .catch(error => console.error("Lỗi khi lấy thông tin tin tức:", error));
+            .then(response => response.json())
+            .then(data => {
+                const news = data[0];
+                document.getElementById('editNewsId').value = news.id;
+                document.getElementById('editNewsTitle').value = news.title;
+                document.getElementById('editNewsContent').value = news.content;
+                document.getElementById('editNewsAuthor').value = news.user.name;
+                document.getElementById('editNewsImage').value = news.image_path;
+                document.getElementById('editNewsStatus').value = news.status;
+            })
+            .catch(error => console.error("Lỗi khi lấy thông tin tin tức:", error));
     }
 
     function deleteCategory(categoryId) {
@@ -176,25 +173,60 @@
         }
 
         fetch(`/admin/news-remove?id=${categoryId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Xóa danh mục thành công!");
-                getData();
-            } else {
-                alert("Xóa danh mục thất bại.");
-            }
-        })
-        .catch(error => console.error("Lỗi khi xóa danh mục:", error));
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Xóa danh mục thành công!");
+                    getData();
+                } else {
+                    alert("Xóa danh mục thất bại.");
+                }
+            })
+            .catch(error => console.error("Lỗi khi xóa danh mục:", error));
+    }
+
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        const errorMessages = document.querySelectorAll('.text-danger');
+        errorMessages.forEach(msg => msg.textContent = '');
+
+        // Initialize an empty string for error messages
+        let errorText = '';
+
+        // Validate product name
+        const name = document.getElementById('editNewsTitle').value;
+        if (!name) {
+            errorText += 'Tên tin tức là bắt buộc !<br>';
+            isValid = false;
+        }
+        // Validate price
+        const content = document.getElementById('editNewsContent').value;
+        if (!content) {
+            errorText += 'Vui lòng nhập nội dung !<br>';
+            isValid = false;
+        }else if( content.lenght < 200){
+            errorText += 'Vui lòng nội dung ít nhất 200 kí tự !<br>';
+            isValid = false;
+        }
+        
+        // Display error messages if validation fails
+        if (!isValid) {
+            document.getElementById('editNewsError').innerHTML = errorText;
+        }
+
+        return isValid;
     }
 
     function updateCategory() {
+        if (!validateForm()) return;
         const id = document.getElementById('editNewsId').value;
         const title = document.getElementById('editNewsTitle').value;
         const content = document.getElementById('editNewsContent').value;
@@ -209,21 +241,21 @@
         formData.append('status', status);
 
         fetch(`/admin/news-update`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Cập nhật tin tức thành công!");
-                closeModal();
-                getData();
-            } else {
-                alert("Cập nhật tin tức thất bại.");
-            }
-        })
-        .catch(error => console.error("Lỗi khi cập nhật tin tức:", error));
+                method: 'POST',
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Cập nhật tin tức thành công!");
+                    closeModal();
+                    getData();
+                } else {
+                    alert("Cập nhật tin tức thất bại.");
+                }
+            })
+            .catch(error => console.error("Lỗi khi cập nhật tin tức:", error));
     }
 </script>

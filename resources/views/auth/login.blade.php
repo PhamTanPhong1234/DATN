@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,25 +24,36 @@
     <section>
         <div class="login-container">
             <h2 class="text-center mb-4">Đăng nhập</h2>
-            @if(session('status'))
-                <div class="alert alert-success mb-4" role="alert">
-                    {{ session('status') }}
-                </div>
+            @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
+            @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+            @endif
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
             @endif
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input id="email" class="form-control" type="email" name="email" value="{{ old('email') }}" required autofocus>
-                    @if($errors->has('email'))
-                        <div class="text-danger mt-2">{{ $errors->first('email') }}</div>
-                    @endif
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu</label>
                     <input id="password" class="form-control" type="password" name="password" required>
                     @if($errors->has('password'))
-                        <div class="text-danger mt-2">{{ $errors->first('password') }}</div>
+                    <div class="text-danger mt-2">{{ $errors->first('password') }}</div>
                     @endif
                 </div>
                 <div class="mb-3 form-check">
@@ -54,8 +66,8 @@
 
                 <div class="d-flex justify-content-between align-items-center">
                     @if (Route::has('password.request'))
-                        <a class="text-decoration-none" href="{{ route('password.request') }}">Quên mật khẩu?</a>
-                   @endif
+                    <a class="text-decoration-none" href="{{ route('password.request') }}">Quên mật khẩu?</a>
+                    @endif
 
                     <div>
                         <button type="submit" class="btn btn-primary">Đăng nhập</button>
@@ -68,4 +80,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

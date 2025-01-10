@@ -225,7 +225,7 @@ Route::get("/product/purchases", function () {
 
     return response()->json($products);
 })->name('products.purchases');
-
+// thêm sản phẩm
 Route::post('/products/store', function (Request $request) {
 
     $product = Product::create([
@@ -328,5 +328,3 @@ Route::get('/artists/famous', function () {
     $artists = Artist::withCount('products')->get();
     return response()->json($artists);
 })->name("artists.famous");
-
-Route::post('/products/filter',[ProductController::class, 'filter'] )->name("products.filter");

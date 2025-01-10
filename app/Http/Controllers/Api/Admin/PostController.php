@@ -26,7 +26,7 @@ class PostController extends Controller
             'author' => 'required|string|max:100',
             'status' => 'in:draft,published'
         ]);
-
+            
         // Tạo bài viết
         $post = Post::create($validatedData);
         return response()->json($post, Response::HTTP_CREATED);

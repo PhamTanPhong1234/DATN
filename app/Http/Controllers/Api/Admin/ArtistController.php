@@ -14,8 +14,9 @@ class ArtistController extends Controller
     public function index()
     {
         $data = Artist::all();
-        return response()->json($data);
+        return response()->json(['artistData' => $data]);
     }
+    
 
     /**
      * Show the form for creating a new resource.

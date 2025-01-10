@@ -2,91 +2,90 @@
 
 @section('main')
 
-    <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-    </head>
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
 
-    <main class="app-content">
-        <div class="app-title">
-            <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Danh sách danh mục</b></a></li>
-            </ul>
-            <div id="clock"></div>
-        </div>
-        <script src="{{ asset('js/app.js') }}"></script>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="tile">
-                    <div class="tile-body">
-                        <div class="row element-button">
-                            <div class="col-sm-2">
-                                <a class="btn btn-success btn-sm" onclick="openModal()" data-toggle="modal"
-                                    data-target="#ModalAddCategory" type="button" title="Thêm danh mục">
-                                    <i class="fas fa-plus"></i> Thêm danh mục
-                                </a>
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a href="#"><b>Danh sách danh mục</b></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="row element-button">
+                        <div class="col-sm-2">
+                            <a class="btn btn-success btn-sm" onclick="openModal()" data-toggle="modal"
+                                data-target="#ModalAddCategory" type="button" title="Thêm danh mục">
+                                <i class="fas fa-plus"></i> Thêm danh mục
+                            </a>
 
-                                <a href="{{ route('cache.categories') }}" class="btn btn-primary">
-                                    <i class="fas fa-sync"></i> Cache
-                                </a>
+                            <a href="{{ route('cache.categories') }}" class="btn btn-primary">
+                                <i class="fas fa-sync"></i> Cache
+                            </a>
 
-                            </div>
                         </div>
-                        <table class="table table-hover table-bordered" id="sampleTable">
-                            <thead>
-                                <tr>
-                                    <th width="10"><input type="checkbox" id="selectAll"></th>
-                                    <th>ID danh mục</th>
-                                    <th>Tên danh mục</th>
-                                    <th>Mô tả</th>
-                                    <th>Hình ảnh</th>
-                                    <th>Chức năng</th>
-                                </tr>
-                            </thead>
-                            <tbody id="body-data-categories">
-                            </tbody>
-                        </table>
+                    </div>
+                    <table class="table table-hover table-bordered" id="sampleTable">
+                        <thead>
+                            <tr>
+                                <th width="10"><input type="checkbox" id="selectAll"></th>
+                                <th>ID danh mục</th>
+                                <th>Tên danh mục</th>
+                                <th>Mô tả</th>
+                                <th>Hình ảnh</th>
+                                <th>Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-data-categories">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+        data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <h5>Chỉnh sửa thông tin danh mục</h5>
+                        </div>
+                        <div id="editCategoryError" class="text-danger w-100 text-center"></div>
+                    </div> <input hidden class="form-control" type="text" id="editCategoryId" value="" required
+                        readonly>
+                    <div class="row">
+
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Tên danh mục</label>
+                            <input class="form-control" type="text" id="editCategoryName" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Mô tả</label>
+                            <input class="form-control" type="text" id="editCategoryDescription" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Hình ảnh</label>
+                            <input class="form-control" type="file" id="editCategoryImage" accept="image/*">
+                            <!-- <img id="editUserImagePreview" src="" alt="User Image" width="100px"> -->
+                        </div>
+                        <button class="btn btn-save" type="button" id="save-edit-category">Lưu lại</button>
+                        <a class="btn btn-cancel" onclick="closeModal()" href="#">Hủy bỏ</a>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
-            data-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <h5>Chỉnh sửa thông tin danh mục</h5>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="control-label">ID</label>
-                                <input class="form-control" type="text" id="editCategoryId" value="" required
-                                    readonly>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Tên danh mục</label>
-                                <input class="form-control" type="text" id="editCategoryName" value="">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Mô tả</label>
-                                <input class="form-control" type="text" id="editCategoryDescription" value="">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Hình ảnh</label>
-                                <input class="form-control" type="file" id="editCategoryImage" accept="image/*">
-                                <img id="editUserImagePreview" src="" alt="User Image" width="100px">
-                            </div>
-                            <button class="btn btn-save" type="button" id="save-edit-category">Lưu lại</button>
-                            <a class="btn btn-cancel" onclick="closeModal()" href="#">Hủy bỏ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </main>
+</main>
 @endsection
 
 <script>
@@ -184,7 +183,38 @@
             .catch(error => console.error("Lỗi khi xóa danh mục:", error));
     }
 
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        const errorMessages = document.querySelectorAll('.text-danger');
+        errorMessages.forEach(msg => msg.textContent = '');
+
+        // Initialize an empty string for error messages
+        let errorText = '';
+
+        // Validate product name
+        const name = document.getElementById('editCategoryName').value;
+        if (!name) {
+            errorText += 'Tên sản phẩm là bắt buộc !<br>';
+            isValid = false;
+        }
+        // Validate price
+        const decr = document.getElementById('editCategoryDescription').value;
+        if (!decr) {
+            errorText += 'Vui lòng nhập mô tả !<br>';
+            isValid = false;
+        }
+        // Display error messages if validation fails
+        if (!isValid) {
+            document.getElementById('editCategoryError').innerHTML = errorText;
+        }
+
+        return isValid;
+    }
+
     function updateCategory() {
+        if (!validateForm()) return;
         const id = document.getElementById('editCategoryId').value;
         const name = document.getElementById('editCategoryName').value;
         const description = document.getElementById('editCategoryDescription').value;
@@ -193,7 +223,7 @@
         formData.append('id', id);
         formData.append('name', name);
         formData.append('description', description);
-        formData.append('image_path',image);
+        formData.append('image_path', image);
         fetch(`/admin/categories-update`, {
                 method: 'POST',
                 body: formData,
@@ -204,7 +234,6 @@
             .then(response => {
                 if (response.ok) {
                     alert("Cập nhật danh mục thành công!");
-                    closeModal();
                     getData();
                 } else {
                     alert("Cập nhật danh mục thất bại.");

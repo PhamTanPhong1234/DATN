@@ -31,6 +31,20 @@ Route::middleware('guest')->group(function () {
         //     'email' => 'required|string|email|max:255|unique:users,email',
         //     'password' => ['required', 'confirmed', Password::defaults()],
         // ]);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => ['required', 'string', 'confirmed', Password::defaults()],
+        ], [
+
+            'name.required' => 'Tên là bắt buộc.',
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại trong hệ thống.',
+            'password.required' => 'Mật khẩu là bắt buộc.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+        ]);
+    
 
         $user = User::create([
             'name' => $request->name,

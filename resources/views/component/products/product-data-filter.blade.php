@@ -61,7 +61,7 @@
         <div class="row">
             <!-- Form lọc sản phẩm -->
             <div class="col-md-3">
-                <form id="filter-form" method="POST" action="{{ route('products.filter') }}" class="filter-form">
+                <form id="filter-form" action="{{ route('products.filter') }}" method="POST" class="filter-form">
                     @csrf
                     <h5>Bộ lọc sản phẩm</h5>
                     <div class="filter-section w-25">
@@ -71,7 +71,13 @@
                             <!-- Options sẽ được thêm vào đây -->
                         </select>
                     </div>
+                    <div class="filter-section w-25">
+                        <label for="artist">Nghệ sĩ:</label>
 
+                        <select name="artist" id="artist-list" style="display: block;">
+                            <!-- Options sẽ được thêm vào đây -->
+                        </select>
+                    </div>
                     <div class="filter-section">
                         <br><br>
                         <label for="price_min">Giá từ:</label>
@@ -88,9 +94,15 @@
                         <label for="quantity_min">Số lượng từ:</label>
                         <input type="number" name="quantity_min" id="quantity_min" value="{{ request('quantity_min') }}" class="form-control" placeholder="Min số lượng">
                     </div>
-
-
-
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <button type="submit" class="btn btn-primary w-100 mt-5">Lọc</button>
                 </form>
             </div>
@@ -99,7 +111,6 @@
             <div class="col-md-9">
                 <div id="shop-1" class="tab-pane active">
                     <div class="row product-data" id="product-list">
-
                         @if (isset($products))
                         @foreach ($products as $product)
                         <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6 col-xs-12">
@@ -139,8 +150,6 @@
                             </article>
                         </div>
                         @endforeach
-                        @else
-
                         @endif
 
                     </div>
@@ -148,6 +157,7 @@
             </div>
         </div>
     </div>
+    <!-- Hộp thoại thông báo -->
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -169,7 +179,7 @@
 
                 // Thêm một option "Tất cả" vào đầu danh sách
                 const allOption = document.createElement('option');
-                allOption.value = '404';
+                allOption.value = 'all';
                 allOption.textContent = 'Tất cả';
                 categoriesList.appendChild(allOption);
 
@@ -184,6 +194,28 @@
 
                 // Khởi tạo lại nice-select
                 $('#category-list').niceSelect('update');
+            };
+            const displayArtist = (artists) => {
+                console.log(artists); // Kiểm tra dữ liệu categories
+                const artistsList = document.getElementById("artist-list");
+                artistsList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
+                console.log(artists); // Kiểm tra dữ liệu categories
+                // Thêm một option "Tất cả" vào đầu danh sách
+                // Thêm một option "Tất cả" vào đầu danh sách
+                const allOption = document.createElement('option');
+                allOption.value = 'all';
+                allOption.textContent = 'Tất cả';
+                artistsList.appendChild(allOption);
+
+                // Thêm các danh mục vào select
+                artists.forEach(artist => {
+                    const artistOption = document.createElement('option');
+                    artistOption.value = artist.id;
+                    artistOption.textContent = artist.name;
+                    artistsList.appendChild(artistOption);
+                });
+                // Khởi tạo lại nice-select
+                $('#artist-list').niceSelect('update');
             };
 
             // Hàm hiển thị các sản phẩm
@@ -214,10 +246,25 @@
                         console.error("Lỗi:", error);
                     });
             };
+            const fetchApiArtist = (filter = "") => {
+                axios.get('http://127.0.0.1:8000/api/artist', {
+                        params: {
+                            filter
+                        },
+                    })
+                    .then(response => {
+                        console.log(response.data);
+                        const data = response.data;
+                        displayArtist(data.artistData);
+                    })
+                    .catch(error => {
+                        console.error("Lỗi:", error);
+                    });
+            };
 
             // Khởi tạo nice-select
             $('select').niceSelect();
-
+            fetchApiArtist();
             fetchApiCategories();
             window.onload = function() {
                 var productElements = document.querySelectorAll('.col-xl-3.col-md-6.col-lg-4.col-sm-6.col-xs-12');

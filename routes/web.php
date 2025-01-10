@@ -1380,4 +1380,4 @@ Route::post('/filter/product-price', function (Request $request) {
   
 require __DIR__ . '/auth.php';
 Route::post('/products/filter',[ProductController::class, 'filter'] )->name("products.filter");
-Route::get('/products/filter-view',[ProductController::class, 'filterview'] );
+Route::get('/products/filter',[ProductController::class, 'indexfilter'] );

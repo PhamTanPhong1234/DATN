@@ -51,20 +51,21 @@
                             <span class="thong-tin-thanh-toan">
                                 <h5>Chỉnh sửa thông tin người dùng</h5>
                             </span> 
+
                         </div>
+                        <div id="editUserError" class="text-danger w-100 text-center"></div>
+
                     </div>
+                    <input class="form-control" type="text" hidden id="editUserId" value="" readonly>
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="control-label">User Id</label>
-                            <input class="form-control" type="text" id="editUserId" value="" readonly>
-                        </div>
-                        <div class="form-group col-md-6">
+
+                        <div class="form-group col-md-12">
                             <label class="control-label">Tên người dùng</label>
                             <input class="form-control" type="text" id="editUserName" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <label class="control-label">Email</label>
-                            <input class="form-control" type="email" id="editUserEmail" value="" readonly>>
+                            <input class="form-control" type="email" id="editUserEmail" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label class="control-label">Hình ảnh</label>
@@ -193,7 +194,31 @@
         .catch(error => console.error("Lỗi khi lấy thông tin người dùng:", error));
     }
 
+
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        const errorMessages = document.querySelectorAll('.text-danger');
+        errorMessages.forEach(msg => msg.textContent = '');
+
+        // Initialize an empty string for error messages
+        let errorText = '';
+
+        // Validate product name
+        const name = document.getElementById('editUserName').value;
+        if (!name) {
+            errorText += 'Tên người dùng là bắt buộc !<br>';
+            isValid = false;
+        }
+        // Display error messages if validation fails
+        if (!isValid) {
+            document.getElementById('editUserError').innerHTML = errorText;
+        }
+        return isValid;
+    }
     function updateUser() {
+        if (!validateForm()) return;
         const userId = document.getElementById('editUserId').value;
         const name = document.getElementById('editUserName').value;
         const email = document.getElementById('editUserEmail').value;

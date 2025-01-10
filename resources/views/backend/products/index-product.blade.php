@@ -2,121 +2,121 @@
 
 @section('main')
 
-    <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        
-    </head>
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <main class="app-content">
-        <div class="app-title">
-            <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
-            </ul>
-            <div id="clock"></div>
-        </div>
+</head>
 
-        <script src="{{ asset('js/app.js') }}"></script>
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="tile">
-                    <div class="tile-body">
-                        <div class="row element-button">
-                            <div class="col-sm-2">
-                                <a class="btn btn-success btn-sm" onclick="openModal()" data-toggle="modal"
-                                    data-target="#ModalUP" type="button">
-                                    <i class="fas fa-plus"></i> Thêm sản phẩm
-                                </a>
-                                <a href="{{ route('cache.product') }}" class="btn btn-primary">
-                                    <i class="fas fa-sync"></i> Cache
-                                </a>
-                            </div>
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="row element-button">
+                        <div class="col-sm-2">
+                            <a class="btn btn-success btn-sm" onclick="openModal()" data-toggle="modal"
+                                data-target="#ModalUP" type="button">
+                                <i class="fas fa-plus"></i> Thêm sản phẩm
+                            </a>
+                            <a href="{{ route('cache.product') }}" class="btn btn-primary">
+                                <i class="fas fa-sync"></i> Cache
+                            </a>
                         </div>
-                        <table class="table table-hover table-bordered" id="sampleTable">
-                            <thead>
-                                <tr>
-                                    <th width="10"><input type="checkbox" id="selectAll"></th>
-                                    <th>ID</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Giá</th>
-                                    <th>Ảnh</th>
-                                    <th>Danh mục</th>
-                                    <th>Nhà sản xuất</th>
-                                    <th>Trạng thái</th>
-                                    <th>Chức năng</th>
-                                </tr>
-                            </thead>
-                            <tbody id="body-data-products"></tbody>
-                        </table>
                     </div>
+                    <table class="table table-hover table-bordered" id="sampleTable">
+                        <thead>
+                            <tr>
+                                <th width="10"><input type="checkbox" id="selectAll"></th>
+                                <th>ID</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Ảnh</th>
+                                <th>Danh mục</th>
+                                <th>Nhà sản xuất</th>
+                                <th>Trạng thái</th>
+                                <th>Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-data-products"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
-            data-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <h5>Chỉnh sửa thông tin sản phẩm</h5>
-                            </div>
+    <!-- Modal -->
+    <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+        data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <h5>Sản phẩm</h5>
+                            <div id="editProductError" class="text-danger w-100 text-center"></div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label class="control-label">ID</label>
-                                <input class="form-control" type="text" id="editProductId" readonly>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Tên sản phẩm</label>
-                                <input class="form-control" type="text" id="editProductName">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Giá</label>
-                                <input class="form-control" type="number" id="editProductPrice">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Số lượng</label>
-                                <input class="form-control" type="number" id="editProductCount" min="1" value="1">
-                            </div>
-                            
-                            <div class="form-group col-md-12">
-                                <label class="control-label">Mô tả</label>
-                                <textarea class="form-control" id="editProductDescription"></textarea>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Tải lên MP3</label>
-                                <input class="form-control" type="file" id="editProductAudio" accept="audio/mp3">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Ảnh</label>
-                                <input class="form-control" type="file" id="editProductImage" accept="image/*">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Trạng thái</label>
-                                <select class="form-control" id="editProductStatus">
-                                    <option value="1">Hoạt động</option>
-                                    <option value="0">Không hoạt động</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Danh mục</label>
-                                <select class="form-control" id="editProductCategories"></select>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="control-label">Nhà sản xuất</label>
-                                <select class="form-control" id="editProductArtist"></select>
-                            </div>
+                    </div><input class="form-control" hidden type="text" id="editProductId" readonly>
+                    <div class="row">
+
+
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Tên sản phẩm</label>
+                            <input class="form-control" type="text" id="editProductName">
                         </div>
-                        <button class="btn btn-save" type="button" id="save-edit-product">Lưu lại</button>
-                        <a class="btn btn-cancel" onclick="closeModal()">Hủy bỏ</a>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Giá</label>
+                            <input class="form-control" type="number" id="editProductPrice">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Số lượng</label>
+                            <input class="form-control" type="number" id="editProductCount" min="1" value="1">
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Mô tả</label>
+                            <textarea class="form-control" id="editProductDescription"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Tải lên MP3</label>
+                            <input class="form-control" type="file" id="editProductAudio" accept="audio/mp3">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Ảnh</label>
+                            <input class="form-control" type="file" id="editProductImage" accept="image/*">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Trạng thái</label>
+                            <select class="form-control" id="editProductStatus">
+                                <option value="1">Hoạt động</option>
+                                <option value="0">Không hoạt động</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Danh mục</label>
+                            <select class="form-control" id="editProductCategories"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Nhà sản xuất</label>
+                            <select class="form-control" id="editProductArtist"></select>
+                        </div>
                     </div>
+                    <button class="btn btn-save" type="button" id="save-edit-product">Lưu lại</button>
+                    <a class="btn btn-cancel" onclick="closeModal()">Hủy bỏ</a>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 @endsection
 
 <script>
@@ -213,7 +213,7 @@
                 document.getElementById('editProductCount').value = count;
                 document.getElementById('editProductDescription').value = description;
                 document.getElementById('editProductStatus').value = status;
-              
+
 
                 getCategories({
                     categories_id
@@ -225,7 +225,37 @@
             .catch(error => console.error("Lỗi khi lấy thông tin sản phẩm:", error));
     }
 
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        const errorMessages = document.querySelectorAll('.text-danger');
+        errorMessages.forEach(msg => msg.textContent = '');
+
+        // Initialize an empty string for error messages
+        let errorText = '';
+
+        // Validate product name
+        const name = document.getElementById('editProductName').value;
+        if (!name) {
+            errorText += 'Tên sản phẩm là bắt buộc !<br>';
+            isValid = false;
+        }
+        // Validate price
+        const price = document.getElementById('editProductPrice').value;
+        if (!price || price <=0) {
+            errorText += 'Vui lòng nhập giá đúng !<br>';
+            isValid = false;
+        }
+        // Display error messages if validation fails
+        if (!isValid) {
+            document.getElementById('editProductError').innerHTML = errorText;
+        }
+
+        return isValid;
+    }
     function updateProduct() {
+        if (!validateForm()) return;
         const formData = new FormData();
         const fields = ['editProductId', 'editProductName', 'editProductPrice', 'editProductCount',
             'editProductDescription', 'editProductStatus', 'editProductCategories', 'editProductArtist'
@@ -237,10 +267,10 @@
         const image = document.getElementById('editProductImage').files[0];
         if (image) formData.append('image', image);
 
-        const mp3 = document.getElementById('editProductAudio').files[0]; 
-if (mp3) { 
-    formData.append('mp3', mp3); 
-}
+        const mp3 = document.getElementById('editProductAudio').files[0];
+        if (mp3) {
+            formData.append('mp3', mp3);
+        }
 
         const id = document.getElementById('editProductId').value;
 

@@ -61,7 +61,7 @@
         <div class="row">
             <!-- Form lọc sản phẩm -->
             <div class="col-md-3">
-                <form id="filter-form" method="POST" action="{{ route('products.filter') }}" class="filter-form">
+                <form id="filter-form" action="{{ route('products.filter') }}" method="POST" class="filter-form">
                     @csrf
                     <h5>Bộ lọc sản phẩm</h5>
                     <div class="filter-section w-25">
@@ -71,7 +71,13 @@
                             <!-- Options sẽ được thêm vào đây -->
                         </select>
                     </div>
+                    <div class="filter-section w-25">
+                        <label for="artist">Nghệ sĩ:</label>
 
+                        <select name="artist" id="artist-list" style="display: block;">
+                            <!-- Options sẽ được thêm vào đây -->
+                        </select>
+                    </div>
                     <div class="filter-section">
                         <br><br>
                         <label for="price_min">Giá từ:</label>
@@ -90,7 +96,15 @@
                     </div>
 
 
-
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <button type="submit" class="btn btn-primary w-100 mt-5">Lọc</button>
                 </form>
             </div>
@@ -125,11 +139,10 @@
                 // Thêm một option "Tất cả" vào đầu danh sách
                 // Thêm một option "Tất cả" vào đầu danh sách
                 const allOption = document.createElement('option');
-                allOption.value = '404';
+                allOption.value = 'all';
                 allOption.textContent = 'Tất cả';
                 categoriesList.appendChild(allOption);
 
-                // Thêm các danh mục vào select
                 categories.forEach(category => {
                     console.log(category); // Kiểm tra từng danh mục
                     const categoryOption = document.createElement('option');
@@ -137,8 +150,29 @@
                     categoryOption.textContent = category.name;
                     categoriesList.appendChild(categoryOption);
                 });
-                // Khởi tạo lại nice-select
                 $('#category-list').niceSelect('update');
+            };
+            const displayArtist = (artists) => {
+                console.log(artists); // Kiểm tra dữ liệu categories
+                const artistsList = document.getElementById("artist-list");
+                artistsList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
+                console.log(artists); // Kiểm tra dữ liệu categories
+                // Thêm một option "Tất cả" vào đầu danh sách
+                // Thêm một option "Tất cả" vào đầu danh sách
+                const allOption = document.createElement('option');
+                allOption.value = 'all';
+                allOption.textContent = 'Tất cả';
+                artistsList.appendChild(allOption);
+
+                // Thêm các danh mục vào select
+                artists.forEach(artist => {
+                    const artistOption = document.createElement('option');
+                    artistOption.value = artist.id;
+                    artistOption.textContent = artist.name;
+                    artistsList.appendChild(artistOption);
+                });
+                // Khởi tạo lại nice-select
+                $('#artist-list').niceSelect('update');
             };
 
             // Hàm hiển thị các sản phẩm
@@ -238,6 +272,20 @@
                     .catch(error => {
                         console.error("Lỗi:", error);
                     });
+            };const fetchApiArtist = (filter = "") => {
+                axios.get('http://127.0.0.1:8000/api/artist', {
+                        params: {
+                            filter
+                        },
+                    })
+                    .then(response => {
+                        console.log(response.data);
+                        const data = response.data;
+                        displayArtist(data.artistData);
+                    })
+                    .catch(error => {
+                        console.error("Lỗi:", error);
+                    });
             };
 
             // Khởi tạo nice-select
@@ -245,6 +293,7 @@
 
             fetchApiProduct();
             fetchApiCategories();
+            fetchApiArtist();
         });
     </script>
 </body>
