@@ -36,7 +36,7 @@
                                 <th>Trạng thái</th>
                                 <th>Chức năng</th>
                             </tr>
-                        </thead>    
+                        </thead>
                         <tbody id="body-data-artists"></tbody>
                     </table>
                 </div>
@@ -52,13 +52,12 @@
                         <div class="form-group col-md-12">
                             <h5>Chỉnh sửa thông tin nghệ sĩ</h5>
                         </div>
+                        <div id="editArtistError" class="text-danger w-100 text-center"></div>
+                        <input hidden class="form-control" type="text" id="editArtistId" readonly>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="control-label">ID</label>
-                            <input class="form-control" type="text" id="editArtistId" readonly>
-                        </div>
-                        <div class="form-group col-md-6">
+                        
+                        <div class="form-group col-md-12">
                             <label class="control-label">Tên nghệ sĩ</label>
                             <input class="form-control" type="text" id="editArtistName">
                         </div>
@@ -92,10 +91,10 @@
         getData();
         document.getElementById('save-edit-artist').addEventListener('click', updateArtist);
     });
-  
+
     function displayArtists(artists) {
         const dataForm = document.getElementById('body-data-artists');
-        dataForm.innerHTML = ''; 
+        dataForm.innerHTML = '';
 
         artists.forEach(artist => {
             const html = `
@@ -116,15 +115,15 @@
                     </td>
                 </tr>
             `;
-            dataForm.innerHTML += html; 
+            dataForm.innerHTML += html;
         });
     }
 
     function getData() {
         fetch('/admin/artist-index')
-        .then(response => response.json())
-        .then(data => displayArtists(data))
-        .catch(error => console.error("Lỗi khi lấy dữ liệu:", error));
+            .then(response => response.json())
+            .then(data => displayArtists(data))
+            .catch(error => console.error("Lỗi khi lấy dữ liệu:", error));
     }
 
     function clearData() {
@@ -134,41 +133,77 @@
         document.getElementById('editArtistImage').value = '';
         document.getElementById('editArtistStatus').value = '';
     }
+
     function editArtist(artistId) {
         fetch(`/admin/artist-single?id=${artistId}`)
-        .then(response => response.json())
-        .then(data => {
-            const artist = data[0];
-            document.getElementById('editArtistId').value = artist.id;
-            document.getElementById('editArtistName').value = artist.name;
-            document.getElementById('editArtistBio').value = artist.bio;
-            document.getElementById('editArtistStatus').value = artist.status;
-        })
-        .catch(error => console.error("Lỗi khi lấy thông tin nghệ sĩ:", error));
+            .then(response => response.json())
+            .then(data => {
+                const artist = data[0];
+                document.getElementById('editArtistId').value = artist.id;
+                document.getElementById('editArtistName').value = artist.name;
+                document.getElementById('editArtistBio').value = artist.bio;
+                document.getElementById('editArtistStatus').value = artist.status;
+            })
+            .catch(error => console.error("Lỗi khi lấy thông tin nghệ sĩ:", error));
     }
 
     function deleteArtist(artistId) {
         if (!confirm("Bạn có chắc chắn muốn xóa nghệ sĩ này?")) return;
 
         fetch(`/admin/artist-remove?id=${artistId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Xóa nghệ sĩ thành công!");
-                getData();
-            } else {
-                alert("Xóa nghệ sĩ thất bại.");
-            }
-        })
-        .catch(error => console.error("Lỗi khi xóa nghệ sĩ:", error));
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Xóa nghệ sĩ thành công!");
+                    getData();
+                } else {
+                    alert("Xóa nghệ sĩ thất bại.");
+                }
+            })
+            .catch(error => console.error("Lỗi khi xóa nghệ sĩ:", error));
+    }
+
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        const errorMessages = document.querySelectorAll('.text-danger');
+        errorMessages.forEach(msg => msg.textContent = '');
+
+        // Initialize an empty string for error messages
+        let errorText = '';
+
+        // Validate product name
+        const name = document.getElementById('editArtistName').value;
+        if (!name) {
+            errorText += 'Tên nghệ sĩ là bắt buộc !<br>';
+            isValid = false;
+        }
+        // Validate price
+        const content = document.getElementById('editArtistBio').value;
+        if (!content) {
+            errorText += 'Vui lòng nhập mô tả nghệ sĩ !<br>';
+            isValid = false;
+        } else if (content.lenght < 50) {
+            errorText += 'Vui lòng nội dung ít nhất 50 kí tự !<br>';
+            isValid = false;
+        }
+
+        // Display error messages if validation fails
+        if (!isValid) {
+            document.getElementById('editArtistError').innerHTML = errorText;
+        }
+
+        return isValid;
     }
 
     function updateArtist() {
+        if (!validateForm()) return;
         const id = document.getElementById('editArtistId').value;
         const name = document.getElementById('editArtistName').value;
         const bio = document.getElementById('editArtistBio').value;
@@ -183,23 +218,24 @@
         formData.append('status', status);
 
         fetch(`/admin/artist-update`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Cập nhật nghệ sĩ thành công!");
-                closeModal();
-                getData();
-            } else {
-                alert("Cập nhật nghệ sĩ thất bại.");
-            }
-        })
-        .catch(error => console.error("Lỗi khi cập nhật nghệ sĩ:", error));
+                method: 'POST',
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Cập nhật nghệ sĩ thành công!");
+                    closeModal();
+                    getData();
+                } else {
+                    alert("Cập nhật nghệ sĩ thất bại.");
+                }
+            })
+            .catch(error => console.error("Lỗi khi cập nhật nghệ sĩ:", error));
     }
+
     function openModal() {
         clearData();
         $('#ModalUP').modal('show');

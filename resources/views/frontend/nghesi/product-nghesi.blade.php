@@ -60,7 +60,7 @@
     };
 
     function fetchFamousArtists() {
-        fetch('{{ route('artists.famous') }}', {
+        fetch('http://127.0.0.1:8000/api/artist', {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json'

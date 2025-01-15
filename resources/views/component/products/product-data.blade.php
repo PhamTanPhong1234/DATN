@@ -132,19 +132,18 @@
             };
 
             const displayCategories = (categories) => {
-                console.log(categories); // Kiểm tra dữ liệu categories
+                console.log(categories);
                 const categoriesList = document.getElementById("category-list");
-                categoriesList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
+                categoriesList.innerHTML = '';
 
-                // Thêm một option "Tất cả" vào đầu danh sách
-                // Thêm một option "Tất cả" vào đầu danh sách
+
                 const allOption = document.createElement('option');
                 allOption.value = 'all';
                 allOption.textContent = 'Tất cả';
                 categoriesList.appendChild(allOption);
 
                 categories.forEach(category => {
-                    console.log(category); // Kiểm tra từng danh mục
+                    console.log(category);
                     const categoryOption = document.createElement('option');
                     categoryOption.value = category.id;
                     categoryOption.textContent = category.name;
@@ -153,32 +152,28 @@
                 $('#category-list').niceSelect('update');
             };
             const displayArtist = (artists) => {
-                console.log(artists); // Kiểm tra dữ liệu categories
+                console.log(artists);
                 const artistsList = document.getElementById("artist-list");
-                artistsList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
-                console.log(artists); // Kiểm tra dữ liệu categories
-                // Thêm một option "Tất cả" vào đầu danh sách
-                // Thêm một option "Tất cả" vào đầu danh sách
+                artistsList.innerHTML = '';
+                console.log(artists);
                 const allOption = document.createElement('option');
                 allOption.value = 'all';
                 allOption.textContent = 'Tất cả';
                 artistsList.appendChild(allOption);
 
-                // Thêm các danh mục vào select
+
                 artists.forEach(artist => {
                     const artistOption = document.createElement('option');
                     artistOption.value = artist.id;
                     artistOption.textContent = artist.name;
                     artistsList.appendChild(artistOption);
                 });
-                // Khởi tạo lại nice-select
                 $('#artist-list').niceSelect('update');
             };
 
-            // Hàm hiển thị các sản phẩm
             const displayProducts = (products) => {
                 const productList = document.getElementById("product-list");
-                productList.innerHTML = ""; // Xóa danh sách sản phẩm cũ
+                productList.innerHTML = "";
                 products.forEach(product => {
                     const productHTML = `
                 <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6 col-xs-12">
@@ -223,7 +218,6 @@
                 });
             };
 
-            // Hàm sinh sao đánh giá cho sản phẩm
             const generateStars = (rating) => {
                 let stars = '';
                 for (let i = 0; i < 5; i++) {
@@ -233,7 +227,6 @@
                 return stars;
             };
 
-            // Lắng nghe sự kiện thay đổi bộ lọc sản phẩm
             const selectOptions = document.querySelectorAll('.nice-select .option');
             selectOptions.forEach(option => {
                 option.addEventListener("click", (event) => {
@@ -242,7 +235,6 @@
                 });
             });
 
-            // Hàm gọi API để lấy sản phẩm
             const fetchApiProduct = (filter = "") => {
                 axios.get('http://127.0.0.1:8000/api/products', {
                         params: {
@@ -272,7 +264,8 @@
                     .catch(error => {
                         console.error("Lỗi:", error);
                     });
-            };const fetchApiArtist = (filter = "") => {
+            };
+            const fetchApiArtist = (filter = "") => {
                 axios.get('http://127.0.0.1:8000/api/artist', {
                         params: {
                             filter
@@ -288,9 +281,7 @@
                     });
             };
 
-            // Khởi tạo nice-select
             $('select').niceSelect();
-
             fetchApiProduct();
             fetchApiCategories();
             fetchApiArtist();

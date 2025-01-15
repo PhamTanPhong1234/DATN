@@ -68,14 +68,12 @@
                         <label for="category">Chọn danh mục:</label>
 
                         <select name="category" id="category-list" style="display: block;">
-                            <!-- Options sẽ được thêm vào đây -->
                         </select>
                     </div>
                     <div class="filter-section w-25">
                         <label for="artist">Nghệ sĩ:</label>
 
                         <select name="artist" id="artist-list" style="display: block;">
-                            <!-- Options sẽ được thêm vào đây -->
                         </select>
                     </div>
                     <div class="filter-section">
@@ -107,7 +105,6 @@
                 </form>
             </div>
 
-            <!-- Danh sách sản phẩm -->
             <div class="col-md-9">
                 <div id="shop-1" class="tab-pane active">
                     <div class="row product-data" id="product-list">
@@ -173,54 +170,45 @@
             };
 
             const displayCategories = (categories) => {
-                console.log(categories); // Kiểm tra dữ liệu categories
+                console.log(categories); 
                 const categoriesList = document.getElementById("category-list");
-                categoriesList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
+                categoriesList.innerHTML = ''; 
 
-                // Thêm một option "Tất cả" vào đầu danh sách
                 const allOption = document.createElement('option');
                 allOption.value = 'all';
                 allOption.textContent = 'Tất cả';
                 categoriesList.appendChild(allOption);
 
-                // Thêm các danh mục vào select
                 categories.forEach(category => {
-                    console.log(category); // Kiểm tra từng danh mục
+                    console.log(category); 
                     const categoryOption = document.createElement('option');
                     categoryOption.value = category.id;
                     categoryOption.textContent = category.name;
                     categoriesList.appendChild(categoryOption);
                 });
 
-                // Khởi tạo lại nice-select
                 $('#category-list').niceSelect('update');
             };
             const displayArtist = (artists) => {
-                console.log(artists); // Kiểm tra dữ liệu categories
+                console.log(artists); 
                 const artistsList = document.getElementById("artist-list");
-                artistsList.innerHTML = ''; // Xóa danh sách cũ trước khi thêm mới
-                console.log(artists); // Kiểm tra dữ liệu categories
-                // Thêm một option "Tất cả" vào đầu danh sách
-                // Thêm một option "Tất cả" vào đầu danh sách
+                artistsList.innerHTML = ''; 
+
+                console.log(artists); 
                 const allOption = document.createElement('option');
                 allOption.value = 'all';
                 allOption.textContent = 'Tất cả';
                 artistsList.appendChild(allOption);
 
-                // Thêm các danh mục vào select
                 artists.forEach(artist => {
                     const artistOption = document.createElement('option');
                     artistOption.value = artist.id;
                     artistOption.textContent = artist.name;
                     artistsList.appendChild(artistOption);
                 });
-                // Khởi tạo lại nice-select
                 $('#artist-list').niceSelect('update');
             };
 
-            // Hàm hiển thị các sản phẩm
-
-            // Lắng nghe sự kiện thay đổi bộ lọc sản phẩm
             const selectOptions = document.querySelectorAll('.nice-select .option');
             selectOptions.forEach(option => {
                 option.addEventListener("click", (event) => {
@@ -261,8 +249,6 @@
                         console.error("Lỗi:", error);
                     });
             };
-
-            // Khởi tạo nice-select
             $('select').niceSelect();
             fetchApiArtist();
             fetchApiCategories();

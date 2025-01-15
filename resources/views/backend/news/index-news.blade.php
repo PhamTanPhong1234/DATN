@@ -212,11 +212,11 @@
         if (!content) {
             errorText += 'Vui lòng nhập nội dung !<br>';
             isValid = false;
-        }else if( content.lenght < 200){
+        } else if (content.lenght < 200) {
             errorText += 'Vui lòng nội dung ít nhất 200 kí tự !<br>';
             isValid = false;
         }
-        
+
         // Display error messages if validation fails
         if (!isValid) {
             document.getElementById('editNewsError').innerHTML = errorText;
